@@ -83,7 +83,7 @@ Where:
     }
 
 ***
-So far, so good, but there _is_ one small issue: The `CursorChanged` event doesn't fire when the `UseWaitCursor` property is used to change the cursor! So now we _do_ have to poll for changes to `Cursor.Current`, but with an improved method that will also be called in the `OnLoad` override..
+So far, so good, but there _is_ one small issue: The `CursorChanged` event doesn't fire when the `UseWaitCursor` property is used to change the cursor! So now we _do_ have to poll for changes to `Cursor.Current`, but with an improved method that will be called in the `OnLoad` override by adding a line: `_ = detectCurrentCursorChanged()`.
 
     private async Task detectCurrentCursorChanged()
     {
