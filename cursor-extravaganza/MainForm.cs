@@ -27,8 +27,6 @@ namespace cursor_extravaganza
             }
         }
 
-        private void onAnyCursorChanged(object? sender, EventArgs e) => displayCursors();
-
         Cursor? _CurrentCursor = Cursor.Current;
         public Cursor? CurrentCursor
         {
@@ -60,7 +58,7 @@ namespace cursor_extravaganza
                         control.Cursor = Cursors.Default;
                         break;
                 }
-                // Hack to redraw the cursor
+                // Hack to redraw the cursor when it returns to default.
                 var positionB4 = MousePosition;
                 Cursor.Position = new Point(positionB4.X + 1, positionB4.Y);
                 Cursor.Position = positionB4;

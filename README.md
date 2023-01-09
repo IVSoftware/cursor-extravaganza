@@ -74,7 +74,7 @@ Where:
                     control.Cursor = Cursors.Default;
                     break;
             }
-            // Hack to redraw the cursor
+            // Hack to redraw the cursor when it returns to default.
             var positionB4 = MousePosition;
             Cursor.Position = new Point(positionB4.X + 1, positionB4.Y);
             Cursor.Position = positionB4;
@@ -95,8 +95,6 @@ So far, so good, but there _is_ one small issue: The `CursorChanged` event doesn
             CurrentCursor = Cursor.Current;
         }
     }
-
-    private void onAnyCursorChanged(object? sender, EventArgs e) => displayCursors();
 
     Cursor? _CurrentCursor = Cursor.Current;
     public Cursor? CurrentCursor
