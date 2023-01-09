@@ -46,11 +46,11 @@ Where:
 ***
 **Test (part 1)** 
 
-For this part of the test, use the right-click option.
+For this part of the test, use the right-click option. This covers the posted test condition using `this.Cursor = Cursors.AppStarting`. 
 
 [![right-click option][1]][1]
 
-This covers the posted test condition using `this.Cursor = Cursors.AppStarting`. Setting up this test requires another control tree iteration to attach the `MouseDown` event. 
+Setting up this test requires another control tree iteration to attach the `MouseDown` event. 
 
     IterateControlTree(this, (control) => control.MouseDown += onAnyMouseDown);
 
