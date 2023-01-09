@@ -52,7 +52,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxCursors.Location = new System.Drawing.Point(249, 12);
             this.richTextBoxCursors.Name = "richTextBoxCursors";
-            this.richTextBoxCursors.Size = new System.Drawing.Size(217, 220);
+            this.richTextBoxCursors.Size = new System.Drawing.Size(317, 220);
             this.richTextBoxCursors.TabIndex = 1;
             this.richTextBoxCursors.Text = "";
             // 
@@ -93,7 +93,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478, 244);
+            this.ClientSize = new System.Drawing.Size(578, 244);
             this.Controls.Add(this.groupBox);
             this.Controls.Add(this.richTextBoxCursors);
             this.Controls.Add(this.buttonMain);

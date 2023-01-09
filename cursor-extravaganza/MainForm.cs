@@ -1,40 +1,79 @@
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace cursor_extravaganza
 {
     public partial class MainForm : Form
     {
-        public MainForm()
+        public MainForm() => InitializeComponent();
+        protected async override void OnLoad(EventArgs e)
         {
-            InitializeComponent();
-            Click += onAnyClick;
-            IterateControlTree(this, (control) => control.Click += onAnyClick);
-            IterateControlTree(this, (control) => control.CursorChanged += onAnyCursorChanged);
-        }
-
-        // Set a wait cursor on the control that is clicked.
-        private async void onAnyClick(object? sender, EventArgs e)
-        {
-            if(sender is Control control)
+            base.OnLoad(e);
+            IterateControlTree(this, (control) => control.MouseDown += onAnyMouseDown);
+            var cts = new CancellationTokenSource();
+            Disposed += (sender, e) => cts.Cancel();
+            while (!cts.IsCancellationRequested)
             {
-                control.Cursor = Cursors.WaitCursor;
-                await Task.Delay(1000);
-                control.Cursor = Cursors.Default;
+                await Task.Delay(100);
+                CurrentCursor = Cursor.Current;
             }
         }
-        private async void onAnyCursorChanged(object? sender, EventArgs e)
+
+        Cursor? _CurrentCursor = Cursor.Current;
+        public Cursor? CurrentCursor
         {
-            await Task.Delay(100);
-            displayCursors();
+            get => _CurrentCursor;
+            set
+            {
+                if (!Equals(_CurrentCursor, value))
+                {
+                    _CurrentCursor = value;
+                    displayCursors();
+                }
+            }
         }
-        private void displayCursors()
+        // Set a wait cursor on the control that is clicked.
+        private async void onAnyMouseDown(object? sender, MouseEventArgs e)
         {
+            if (sender is Control control)
+            {
+                var positionB4 = Cursor.Position;
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
+                        control.UseWaitCursor = true;
+                        await Task.Delay(DURATION);
+                        control.UseWaitCursor = false;
+                        break;
+                    case MouseButtons.Right:
+                        control.Cursor = Cursors.AppStarting;
+                        await Task.Delay(DURATION);
+                        control.Cursor = Cursors.Default;
+                        break;
+                }
+                // Hack to redraw the cursor
+                Cursor.Position = new Point(Cursor.Position.X + 1, Cursor.Position.Y);
+                Cursor.Position = positionB4;
+            }
+        }
+        const int DURATION = 2500;
+        int _rawCount = 0;
+        private async Task displayCursors()
+        {
+            await Task.Delay(100); // Settle
             richTextBoxCursors.Clear();
+            richTextBoxCursors.SelectionColor = Color.Navy;
+            richTextBoxCursors.AppendText($"Cursor : {Cursor.Current} {Environment.NewLine}");
             IterateControlTree(this, (control) => localAddEntry(control));
             void localAddEntry(Control control)
             {
-                var isWaitCursor = control.Cursor.Equals(Cursors.WaitCursor);
-                Color color = isWaitCursor ? Color.Red : Color.Green;
-                richTextBoxCursors.SelectionColor = color;
-                richTextBoxCursors.AppendText($"{control.Name} : {isWaitCursor} {Environment.NewLine}");
+                if (!(control is RichTextBox))
+                {
+                    var isDefault = control.Cursor.Equals(Cursors.Default);
+                    Color color = isDefault ? Color.Green : Color.Red;
+                    richTextBoxCursors.SelectionColor = color;
+                    richTextBoxCursors.AppendText($"{control.Name} : {control.Cursor} {Environment.NewLine}");
+                }
             }
         }
         internal void IterateControlTree(Control control, Action<Control> fx)
