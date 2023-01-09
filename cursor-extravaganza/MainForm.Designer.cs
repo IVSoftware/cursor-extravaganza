@@ -65,7 +65,7 @@
             this.groupBox.Size = new System.Drawing.Size(190, 150);
             this.groupBox.TabIndex = 2;
             this.groupBox.TabStop = false;
-            this.groupBox.Text = "Radios";
+            this.groupBox.Text = "Radio";
             // 
             // radioGooGoo
             // 

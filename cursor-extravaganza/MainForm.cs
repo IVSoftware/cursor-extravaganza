@@ -6,10 +6,18 @@ namespace cursor_extravaganza
     public partial class MainForm : Form
     {
         public MainForm() => InitializeComponent();
-        protected async override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            IterateControlTree(
+                this,
+                (control) => control.CursorChanged += (sender, e) => displayCursors());
+
             IterateControlTree(this, (control) => control.MouseDown += onAnyMouseDown);
+            _ = detectCurrentCursorChanged();
+        }
+        private async Task detectCurrentCursorChanged()
+        {
             var cts = new CancellationTokenSource();
             Disposed += (sender, e) => cts.Cancel();
             while (!cts.IsCancellationRequested)
@@ -18,6 +26,8 @@ namespace cursor_extravaganza
                 CurrentCursor = Cursor.Current;
             }
         }
+
+        private void onAnyCursorChanged(object? sender, EventArgs e) => displayCursors();
 
         Cursor? _CurrentCursor = Cursor.Current;
         public Cursor? CurrentCursor
@@ -32,7 +42,7 @@ namespace cursor_extravaganza
                 }
             }
         }
-        // Set a wait cursor on the control that is clicked.
+        // Set cursor on the control that is clicked.
         private async void onAnyMouseDown(object? sender, MouseEventArgs e)
         {
             if (sender is Control control)
@@ -58,7 +68,6 @@ namespace cursor_extravaganza
             }
         }
         const int DURATION = 2500;
-        int _rawCount = 0;
         private void displayCursors()
         {
             richTextBoxCursors.Clear();
