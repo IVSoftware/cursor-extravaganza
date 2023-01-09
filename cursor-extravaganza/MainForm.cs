@@ -37,7 +37,6 @@ namespace cursor_extravaganza
         {
             if (sender is Control control)
             {
-                var positionB4 = Cursor.Position;
                 switch (e.Button)
                 {
                     case MouseButtons.Left:
@@ -52,19 +51,21 @@ namespace cursor_extravaganza
                         break;
                 }
                 // Hack to redraw the cursor
-                Cursor.Position = new Point(Cursor.Position.X + 1, Cursor.Position.Y);
+                var positionB4 = MousePosition;
+                Cursor.Position = new Point(positionB4.X + 1, positionB4.Y);
                 Cursor.Position = positionB4;
+                displayCursors();
             }
         }
         const int DURATION = 2500;
         int _rawCount = 0;
-        private async Task displayCursors()
+        private void displayCursors()
         {
-            await Task.Delay(100); // Settle
             richTextBoxCursors.Clear();
             richTextBoxCursors.SelectionColor = Color.Navy;
             richTextBoxCursors.AppendText($"Cursor : {Cursor.Current} {Environment.NewLine}");
             IterateControlTree(this, (control) => localAddEntry(control));
+
             void localAddEntry(Control control)
             {
                 if (!(control is RichTextBox))
